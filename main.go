@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"movies-api/config"
 )
 
 func main() {
-	fmt.Printf("Configs loaded: API: %v, DB: %v\n", config.GetAPI(), config.GetDB())
+	log.Printf("Config loaded:\n\tAPI: %v\n\tDB: %v\n", config.GetAPI(), config.GetDB())
 }

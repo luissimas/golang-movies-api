@@ -1,6 +1,8 @@
 package config
 
 import (
+	"log"
+
 	"github.com/spf13/viper"
 )
 
@@ -32,15 +34,19 @@ func init() {
 	viper.SetDefault("database.host", "localhost")
 	viper.SetDefault("database.port", "5432")
 
-	Load()
+	if err := load(); err != nil {
+		log.Fatalf("Error loading config file: %v", err)
+	}
 }
 
-func Load() error {
+func load() error {
 	err := viper.ReadInConfig()
 
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			return err
+		} else {
+			log.Print("Config file not found, falling back to default config")
 		}
 	}
 
