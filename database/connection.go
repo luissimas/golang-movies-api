@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"movies-api/config"
 
 	_ "github.com/lib/pq"
@@ -15,10 +14,13 @@ func OpenConnection() (*sql.DB, error) {
 
 	conn, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Error creating database connection: %v", err)
+		return nil, err
 	}
 
 	err = conn.Ping()
+	if err != nil {
+		return nil, err
+	}
 
 	return conn, err
 }
