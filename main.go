@@ -26,7 +26,7 @@ func main() {
 	router.PATCH("/movie/:id", handlers.AdaptHandler(handlers.PatchMovie, db))
 	router.DELETE("/movie/:id", handlers.AdaptHandler(handlers.DeleteMovie, db))
 
-	url := fmt.Sprintf("localhost:%s", config.GetAPI().Port)
+	url := fmt.Sprintf("%s:%s", config.GetAPI().Host, config.GetAPI().Port)
 
 	router.Run(url)
 }

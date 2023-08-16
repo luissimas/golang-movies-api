@@ -3,4 +3,4 @@
 *.log
 tmp/
 
-config.toml
+config*.toml

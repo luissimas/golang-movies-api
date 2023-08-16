@@ -1,0 +1,27 @@
+version: "3.1"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: movies-api-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: movies-api-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:

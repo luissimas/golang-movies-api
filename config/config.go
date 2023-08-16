@@ -14,6 +14,7 @@ type config struct {
 }
 
 type APIConfig struct {
+	Host string
 	Port string
 }
 
@@ -30,6 +31,7 @@ func init() {
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
 
+	viper.SetDefault("api.host", "localhost")
 	viper.SetDefault("api.port", "8080")
 	viper.SetDefault("database.host", "localhost")
 	viper.SetDefault("database.port", "5432")
