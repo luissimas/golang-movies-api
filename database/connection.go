@@ -1,26 +1,27 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"movies-api/config"
+	"movies-api/entities"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-func OpenConnection() (*sql.DB, error) {
+func CreateDatabase() (*gorm.DB, error) {
 	conf := config.GetDB()
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", conf.Host, conf.Port, conf.User, conf.Password, conf.Database)
 
-	conn, err := sql.Open("postgres", connStr)
+	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	err = conn.Ping()
-	if err != nil {
-		return nil, err
-	}
+	db.AutoMigrate(&entities.Movie{})
 
-	return conn, err
+	return db, err
 }

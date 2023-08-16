@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"movies-api/config"
@@ -13,7 +12,7 @@ import (
 
 func main() {
 	log.Printf("Config loaded:\n\tAPI: %v\n\tDB: %v\n", config.GetAPI(), config.GetDB())
-	conn, err := database.OpenConnection()
+	db, err := database.CreateDatabase()
 	if err != nil {
 		log.Fatalf("Error creating database connection: %v\n", err)
 	}
@@ -21,15 +20,10 @@ func main() {
 
 	router := gin.Default()
 
-	adaptHandler := func(handler func(*sql.DB, *gin.Context), conn *sql.DB) func(*gin.Context) {
-		return func(ctx *gin.Context) {
-			handler(conn, ctx)
-		}
-	}
-
-	router.GET("/movie", adaptHandler(handlers.GetMovies, conn))
-	router.GET("/movie/:id", adaptHandler(handlers.GetMovieById, conn))
-	router.POST("/movie", adaptHandler(handlers.PostMovie, conn))
+	router.GET("/movie", handlers.AdaptHandler(handlers.GetMovies, db))
+	router.GET("/movie/:id", handlers.AdaptHandler(handlers.GetMovieById, db))
+	router.POST("/movie", handlers.AdaptHandler(handlers.PostMovie, db))
+	router.DELETE("/movie/:id", handlers.AdaptHandler(handlers.DeleteMovie, db))
 
 	url := fmt.Sprintf("localhost:%s", config.GetAPI().Port)
 
