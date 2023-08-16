@@ -1,0 +1,6 @@
+#+title:Movies API
+This is a simple example REST API built as a way to learn Go.
+
+** TODO Domain problem
+** TODO Project structure
+** TODO Running locally
