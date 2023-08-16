@@ -23,6 +23,7 @@ func main() {
 	router.GET("/movie", handlers.AdaptHandler(handlers.GetMovies, db))
 	router.GET("/movie/:id", handlers.AdaptHandler(handlers.GetMovieById, db))
 	router.POST("/movie", handlers.AdaptHandler(handlers.PostMovie, db))
+	router.PATCH("/movie/:id", handlers.AdaptHandler(handlers.PatchMovie, db))
 	router.DELETE("/movie/:id", handlers.AdaptHandler(handlers.DeleteMovie, db))
 
 	url := fmt.Sprintf("localhost:%s", config.GetAPI().Port)

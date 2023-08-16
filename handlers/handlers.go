@@ -62,6 +62,37 @@ func PostMovie(db *gorm.DB, c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, movie)
 }
 
+func PatchMovie(db *gorm.DB, c *gin.Context) {
+	id := c.Param("id")
+	parsedId, err := uuid.Parse(id)
+	if err != nil {
+		log.Printf("Error parsing id: %v", err)
+		c.IndentedJSON(http.StatusBadRequest, map[string]string{"message": "Param \"id\" must be a valid UUID."})
+		return
+	}
+
+	var movie = &Movie{ID: parsedId}
+	err = db.First(&movie).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.IndentedJSON(http.StatusNotFound, map[string]string{"message": "Movie not found."})
+			return
+		}
+		log.Fatal(err)
+	}
+
+	if err := c.BindJSON(&movie); err != nil {
+		log.Printf("Error parsing body: %v", err)
+		c.IndentedJSON(http.StatusBadRequest, map[string]string{"message": "Invalid body."})
+	}
+
+	if err := db.Save(&movie).Error; err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("movie: %v+", movie)
+	c.IndentedJSON(http.StatusOK, movie)
+}
+
 func DeleteMovie(db *gorm.DB, c *gin.Context) {
 	id := c.Param("id")
 	parsedId, err := uuid.Parse(id)
